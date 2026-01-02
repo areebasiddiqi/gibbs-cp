@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your nursing reflection sessions using Gibbs' Reflective Cycle.">
+    <title>Dashboard | Gibbs' Reflective Cycle</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.png" alt="Nursing Mentorship Logo" class="nav-logo-img">
+                <span>Nursing Mentorship</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#phases" class="nav-link">The 6 Phases</a></li>
+                <li><a href="#" class="btn btn-primary" onclick="openNewSessionModal()">New Reflection</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main style="padding-top: calc(80px + var(--space-8)); min-height: 100vh;">
+        <div class="container">
+            <div class="dashboard-header">
+                <div>
+                    <h1>Your Reflections</h1>
+                    <p style="margin-top: var(--space-2);">Track your journey of professional growth</p>
+                </div>
+                <button class="btn btn-primary btn-lg" onclick="openNewSessionModal()">
+                    <span>+</span>
+                    <span>New Reflection</span>
+                </button>
+            </div>
+
+            <!-- Reflections Grid -->
+            <div id="reflections-container">
+                <!-- Cards will be inserted here by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="glass-card empty-state hidden">
+                <div class="empty-state-icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg></div>
+                <h3>No Reflections Yet</h3>
+                <p>Start your first reflection session to begin your journey of professional growth and meaningful
+                    clinical insight.</p>
+                <button class="btn btn-primary btn-lg" onclick="openNewSessionModal()">
+                    Start Your First Reflection
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Session Modal -->
+    <div class="modal-overlay" id="new-session-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Start a New Reflection</h3>
+                <button class="modal-close" onclick="closeNewSessionModal()">&times;</button>
+            </div>
+            <form id="new-session-form" onsubmit="createNewSession(event)">
+                <div class="form-group">
+                    <label class="form-label" for="session-title">Reflection Title</label>
+                    <input type="text" id="session-title" class="form-input"
+                        placeholder="e.g., Managing Post-Op Pain in Elderly Patient" required maxlength="100">
+                    <p style="font-size: 0.875rem; color: var(--gray-500); margin-top: var(--space-2);">
+                        Give your reflection a meaningful title that helps you remember the experience.
+                    </p>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeNewSessionModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Begin Reflection</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Delete Reflection?</h3>
+                <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+            </div>
+            <p style="color: var(--gray-600); margin-bottom: var(--space-4);">
+                Are you sure you want to delete this reflection? This action cannot be undone.
+            </p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Storage key
+        const STORAGE_KEY = 'gibbs_reflections';
+
+        // Phase names
+        const PHASES = ['description', 'feelings', 'evaluation', 'analysis', 'conclusion', 'action'];
+        const PHASE_LABELS = ['Description', 'Feelings', 'Evaluation', 'Analysis', 'Conclusion', 'Action Plan'];
+
+        // Track which session to delete
+        let sessionToDelete = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderReflections();
+        });
+
+        // Get reflections from localStorage
+        function getReflections() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        // Save reflections to localStorage
+        function saveReflections(reflections) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(reflections));
+        }
+
+        // Calculate progress percentage
+        function calculateProgress(session) {
+            let completed = 0;
+            PHASES.forEach(phase => {
+                if (session.phases && session.phases[phase] && session.phases[phase].trim() !== '') {
+                    completed++;
+                }
+            });
+            return Math.round((completed / PHASES.length) * 100);
+        }
+
+        // Get current phase index
+        function getCurrentPhase(session) {
+            for (let i = 0; i < PHASES.length; i++) {
+                if (!session.phases || !session.phases[PHASES[i]] || session.phases[PHASES[i]].trim() === '') {
+                    return i;
+                }
+            }
+            return PHASES.length; // All complete
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+
+        // Render reflections
+        function renderReflections() {
+            const container = document.getElementById('reflections-container');
+            const emptyState = document.getElementById('empty-state');
+            const reflections = getReflections();
+
+            if (reflections.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            // Sort by date (most recent first)
+            reflections.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+            container.innerHTML = `
+                <div class="reflections-grid">
+                    ${reflections.map((session, index) => {
+                const progress = calculateProgress(session);
+                const currentPhaseIndex = getCurrentPhase(session);
+                const isComplete = currentPhaseIndex >= PHASES.length;
+                const currentPhaseLabel = isComplete ? 'Completed' : `Phase ${currentPhaseIndex + 1}: ${PHASE_LABELS[currentPhaseIndex]}`;
+
+                return `
+                            <div class="glass-card reflection-card" style="animation-delay: ${index * 0.1}s">
+                                <div class="reflection-card-header">
+                                    <h4 class="reflection-title">${escapeHtml(session.title)}</h4>
+                                    <span class="reflection-date">${formatDate(session.updatedAt)}</span>
+                                </div>
+                                
+                                <div class="reflection-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${progress}%"></div>
+                                    </div>
+                                    <span class="progress-text">${currentPhaseLabel} • ${progress}% complete</span>
+                                </div>
+                                
+                                <div class="reflection-actions">
+                                    <a href="reflection.html?id=${session.id}" class="btn ${isComplete ? 'btn-secondary' : 'btn-primary'}">
+                                        ${isComplete ? 'Review' : 'Continue'}
+                                    </a>
+                                    <button class="btn btn-icon" onclick="openDeleteModal('${session.id}')" title="Delete" style="background: var(--gray-100); color: var(--gray-600);">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+            }).join('')}
+                </div>
+            `;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Open new session modal
+        function openNewSessionModal() {
+            document.getElementById('new-session-modal').classList.add('active');
+            document.getElementById('session-title').focus();
+        }
+
+        // Close new session modal
+        function closeNewSessionModal() {
+            document.getElementById('new-session-modal').classList.remove('active');
+            document.getElementById('new-session-form').reset();
+        }
+
+        // Create new session
+        function createNewSession(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('session-title').value.trim();
+            if (!title) return;
+
+            const newSession = {
+                id: generateId(),
+                title: title,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                phases: {}
+            };
+
+            const reflections = getReflections();
+            reflections.push(newSession);
+            saveReflections(reflections);
+
+            closeNewSessionModal();
+
+            // Navigate to the reflection page
+            window.location.href = `reflection.html?id=${newSession.id}`;
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return 'ref_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Open delete modal
+        function openDeleteModal(sessionId) {
+            sessionToDelete = sessionId;
+            document.getElementById('delete-modal').classList.add('active');
+        }
+
+        // Close delete modal
+        function closeDeleteModal() {
+            sessionToDelete = null;
+            document.getElementById('delete-modal').classList.remove('active');
+        }
+
+        // Confirm delete
+        function confirmDelete() {
+            if (!sessionToDelete) return;
+
+            let reflections = getReflections();
+            reflections = reflections.filter(s => s.id !== sessionToDelete);
+            saveReflections(reflections);
+
+            closeDeleteModal();
+            renderReflections();
+        }
+
+        // Close modals on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeNewSessionModal();
+                closeDeleteModal();
+            }
+        });
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeNewSessionModal();
+                    closeDeleteModal();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

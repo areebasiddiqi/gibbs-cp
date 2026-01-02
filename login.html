@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login to your Nursing Mentorship account">
+    <title>Login | Nursing Mentorship</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Primary Colors */
+            --primary-purple: #7c3aed;
+            --primary-purple-dark: #6d28d9;
+            --primary-purple-light: #a78bfa;
+            --primary-purple-50: #f5f3ff;
+
+            /* Secondary Colors */
+            --secondary-blue: #0ea5e9;
+            --secondary-blue-dark: #0284c7;
+            --secondary-blue-light: #7dd3fc;
+
+            /* Accent - Teal/Green */
+            --accent-teal: #14b8a6;
+            --accent-teal-dark: #0d9488;
+
+            /* Neutrals */
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+
+            /* Typography */
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-heading: 'Outfit', 'Inter', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        /* Main Layout */
+        .login-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Left Panel - Form */
+        .login-panel {
+            width: 40%;
+            min-width: 400px;
+            max-width: 520px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 50px;
+            overflow-y: auto;
+        }
+
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .logo-img {
+            height: 180px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .logo-text span {
+            color: var(--accent-teal);
+        }
+
+        /* App Brand */
+        .app-brand {
+            margin-bottom: 40px;
+        }
+
+        .app-brand h2 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--accent-teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Form Container */
+        .form-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 380px;
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-header h1 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: var(--gray-500);
+            font-size: 1rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            font-family: var(--font-primary);
+            font-size: 1rem;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--gray-400);
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-purple);
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            font-family: var(--font-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--accent-teal) 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.45);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            background: transparent;
+            color: var(--primary-purple);
+            border: 2px solid var(--primary-purple);
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-purple-50);
+        }
+
+        /* Links */
+        .form-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .form-link {
+            font-size: 0.9375rem;
+            color: var(--primary-purple);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .form-link:hover {
+            color: var(--primary-purple-dark);
+            text-decoration: underline;
+        }
+
+        /* Bottom Section */
+        .bottom-section {
+            margin-top: auto;
+            padding-top: 40px;
+            border-top: 1px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .bottom-section p {
+            color: var(--gray-500);
+            font-size: 0.9375rem;
+            margin-bottom: 12px;
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            padding: 12px 24px;
+            background: white;
+            color: var(--gray-700);
+            border: 2px solid var(--gray-300);
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+            background: var(--primary-purple-50);
+        }
+
+        /* Right Panel - Image */
+        .image-panel {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-blue) 100%);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .image-panel img {
+            width: 90%;
+            max-width: 650px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom,
+                    rgba(124, 58, 237, 0.05) 0%,
+                    rgba(14, 165, 233, 0.1) 100%);
+            pointer-events: none;
+        }
+
+        /* Image Content */
+        .image-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .image-caption {
+            margin-top: 20px;
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--accent-teal) 100%);
+            padding: 20px 32px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-caption h2 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: white;
+        }
+
+        .image-caption p {
+            font-size: 1rem;
+            opacity: 0.95;
+            color: white;
+        }
+
+        /* Info Card */
+        .info-card {
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--accent-teal) 100%);
+            border-radius: 16px;
+            padding: 20px 32px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .info-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            opacity: 0.95;
+        }
+
+        .info-stats {
+            display: flex;
+            gap: 32px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        /* Decorative Elements */
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: 200px;
+            left: -80px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .login-panel {
+                width: 100%;
+                max-width: none;
+                min-width: auto;
+                padding: 30px 24px;
+            }
+
+            .form-container {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .image-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-panel {
+                padding: 24px 20px;
+            }
+
+            .form-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .logo {
+                margin-bottom: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Left Panel - Login Form -->
+        <div class="login-panel">
+            <!-- Logo -->
+            <div class="logo">
+                <img src="logo.png" alt="Nursing Mentorship Logo" class="logo-img">
+            </div>
+
+            <!-- Form -->
+            <div class="form-container">
+
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password"
+                            required>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember" class="checkbox-input">
+                        <label for="remember" class="checkbox-label">Remember my login</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Log in
+                    </button>
+
+                    <a href="register.html" class="btn btn-secondary">
+                        Create an account
+                    </a>
+                </form>
+
+                <div class="form-links">
+                    <a href="#" class="form-link">Forgot your password?</a>
+                    <a href="#" class="form-link">Contact us for login help</a>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="bottom-section">
+                <p>Not a member?</p>
+                <a href="index.html" class="btn-outline">Learn how to join</a>
+            </div>
+        </div>
+
+        <!-- Right Panel - Image -->
+        <div class="image-panel">
+            <div class="image-content">
+                <img src="nursing_students.jpg" alt="Nursing mentorship illustration" id="hero-image">
+                <div class="image-caption">
+                    <h2>One-on-One Nursing Mentorship</h2>
+                    <p>Let's reflect, learn, and grow together.</p>
+                </div>
+                <!-- Info Card -->
+                <div class="info-card">
+                    <h3>Nursing Mentorship Sessions</h3>
+                    <div class="info-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Mentees</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">6</div>
+                            <div class="stat-label">Phases</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Growth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            // For demo purposes, just redirect to dashboard
+            // In production, this would validate credentials with a server
+            console.log('Login attempt:', { email, remember });
+
+            // Simulate successful login
+            window.location.href = 'dashboard.html';
+        }
+
+        // Fallback image if the generated image doesn't load
+        document.getElementById('hero-image').onerror = function () {
+            this.style.display = 'none';
+            this.parentElement.style.background = 'linear-gradient(135deg, #7c3aed 0%, #0ea5e9 50%, #14b8a6 100%)';
+        };
+    </script>
+</body>
+
+</html>

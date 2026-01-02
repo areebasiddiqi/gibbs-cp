@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete your nursing reflection using Gibbs' Reflective Cycle.">
+    <title>Reflection Session | Gibbs' Reflective Cycle</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.png" alt="Nursing Mentorship Logo" class="nav-logo-img">
+                <span>Nursing Mentorship</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="dashboard.html" class="nav-link">← Back to Dashboard</a></li>
+                <li><span id="session-title-nav" class="nav-link" style="font-weight: 600;"></span></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="reflection-layout container">
+        <!-- Main Content Area -->
+        <main class="reflection-main glass-card">
+            <!-- Phase Indicator -->
+            <div class="phase-indicator" id="phase-indicator">
+                <div class="phase-dot" data-phase="0">1</div>
+                <div class="phase-dot" data-phase="1">2</div>
+                <div class="phase-dot" data-phase="2">3</div>
+                <div class="phase-dot" data-phase="3">4</div>
+                <div class="phase-dot" data-phase="4">5</div>
+                <div class="phase-dot" data-phase="5">6</div>
+            </div>
+
+            <!-- Phase Content Container -->
+            <div id="phase-content-container">
+                <!-- Phase content will be rendered here -->
+            </div>
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="reflection-sidebar glass-card" id="sidebar">
+            <!-- Sidebar content will be rendered here -->
+        </aside>
+    </div>
+
+    <script>
+        // Constants
+        const STORAGE_KEY = 'gibbs_reflections';
+
+        // Phase configuration with nursing-specific content
+        const PHASES = [
+            {
+                id: 'description',
+                name: 'Description',
+                icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+                color: 'description',
+                question: 'What happened?',
+                subtitle: 'Describe the clinical experience objectively',
+                guidingQuestions: [
+                    'What was the clinical setting and context?',
+                    'Who was involved (patient, family, colleagues)?',
+                    'What exactly happened in sequence?',
+                    'What was your specific role and actions?',
+                    'What was the outcome?'
+                ],
+                examples: [
+                    {
+                        title: 'Post-Op Pain Management',
+                        text: 'An 82-year-old patient 2 days post hip replacement was reporting pain at 8/10 despite scheduled analgesia. I noticed increased anxiety and reluctance to mobilize during morning assessment.'
+                    },
+                    {
+                        title: 'Deteriorating Patient',
+                        text: 'During night shift, I noticed subtle changes in a post-cardiac patient: slightly elevated RR, restlessness. Vital signs were within parameters but something felt off.'
+                    },
+                    {
+                        title: 'Family Communication',
+                        text: 'The daughter of a palliative care patient arrived distressed, demanding to know why her father\'s medications had been changed without consultation.'
+                    }
+                ],
+                tips: [
+                    'Be factual and objective - stick to what happened',
+                    'Include relevant clinical details (vitals, assessments)',
+                    'Note the timeline of events',
+                    'Avoid jumping to conclusions or interpretations'
+                ]
+            },
+            {
+                id: 'feelings',
+                name: 'Feelings',
+                icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
+                color: 'feelings',
+                question: 'What were you thinking and feeling?',
+                subtitle: 'Explore your emotional responses honestly',
+                guidingQuestions: [
+                    'What were your initial thoughts when this happened?',
+                    'What emotions did you experience during the event?',
+                    'Did you feel confident or uncertain? Why?',
+                    'Were you stressed, anxious, or calm?',
+                    'What are your feelings now, looking back?'
+                ],
+                examples: [
+                    {
+                        title: 'Anxiety About Decisions',
+                        text: 'I felt anxious about whether I should contact the doctor at 2am. I worried I might be overreacting but also feared missing something serious.'
+                    },
+                    {
+                        title: 'Pride in Advocacy',
+                        text: 'I felt proud that I trusted my instincts and advocated for the patient despite initial pushback. It reinforced my confidence in clinical judgment.'
+                    },
+                    {
+                        title: 'Workload Overwhelm',
+                        text: 'I felt frustrated and overwhelmed managing 6 high-acuity patients. I worried about missing important details and felt guilty I couldn\'t give each patient the time they deserved.'
+                    }
+                ],
+                tips: [
+                    'It\'s okay to acknowledge uncertainty or doubt',
+                    'Be honest about negative emotions too',
+                    'Consider both immediate and retrospective feelings',
+                    'Recognize that emotional responses are normal and valid'
+                ]
+            },
+            {
+                id: 'evaluation',
+                name: 'Evaluation',
+                icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 7l3 9a5 5 0 0 0 4 0l3-9M15 7l3 9a5 5 0 0 0 4 0l-3-9M3 7h6M15 7h6"/></svg>',
+                color: 'evaluation',
+                question: 'What was good and bad about the experience?',
+                subtitle: 'Assess what went well and what was challenging',
+                guidingQuestions: [
+                    'What went well in this situation?',
+                    'What didn\'t go so well?',
+                    'What was your contribution to the outcome?',
+                    'How did others contribute positively or negatively?',
+                    'Were there any patient safety concerns?'
+                ],
+                examples: [
+                    {
+                        title: 'Quick Recognition (+) vs Delayed Escalation (-)',
+                        text: 'Positive: I recognized the early warning signs promptly. Negative: I delayed escalation by 30 minutes because I second-guessed my assessment.'
+                    },
+                    {
+                        title: 'Good Communication (+) vs Time Constraints (-)',
+                        text: 'Positive: I communicated clearly and calmly with the distressed family. Negative: Time constraints meant I couldn\'t provide as much emotional support as the family needed.'
+                    },
+                    {
+                        title: 'Team Collaboration',
+                        text: 'Positive: The team responded quickly when I escalated. Negative: Handover information was incomplete, which contributed to the problem initially being missed.'
+                    }
+                ],
+                tips: [
+                    'Be balanced - consider both positives and negatives',
+                    'Consider patient safety implications',
+                    'Think about teamwork and communication',
+                    'Reflect on resource availability and constraints'
+                ]
+            },
+            {
+                id: 'analysis',
+                name: 'Analysis',
+                icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+                color: 'analysis',
+                question: 'What sense can you make of the situation?',
+                subtitle: 'Connect to theory, evidence, and deeper understanding',
+                guidingQuestions: [
+                    'Why did things happen the way they did?',
+                    'What nursing theories or frameworks apply here?',
+                    'What does the evidence say about this situation?',
+                    'How does pathophysiology explain what you observed?',
+                    'What system factors contributed to the outcome?'
+                ],
+                examples: [
+                    {
+                        title: 'WHO Pain Ladder Connection',
+                        text: 'The patient\'s uncontrolled pain despite regular paracetamol suggests we needed to step up the WHO pain ladder. The evidence supports multimodal analgesia for post-surgical pain.'
+                    },
+                    {
+                        title: 'Evidence-Based Early Warning',
+                        text: 'Research on Early Warning Scores shows that subtle changes often precede deterioration. My "gut feeling" was likely pattern recognition developed through clinical experience.'
+                    },
+                    {
+                        title: 'Communication Theory',
+                        text: 'The family\'s distress can be understood through crisis communication theory - they needed information, reassurance, and to feel heard before they could process the clinical decisions.'
+                    }
+                ],
+                tips: [
+                    'Link to nursing theories (e.g., Benner, Watson, Orem)',
+                    'Consider evidence-based practice guidelines',
+                    'Think about pathophysiology and pharmacology',
+                    'Reflect on system and organizational factors'
+                ]
+            },
+            {
+                id: 'conclusion',
+                name: 'Conclusion',
+                icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.9V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.1A7 7 0 0 0 12 2z"/></svg>',
+                color: 'conclusion',
+                question: 'What else could you have done?',
+                subtitle: 'Identify learning points and alternatives',
+                guidingQuestions: [
+                    'What have you learned from this experience?',
+                    'What could you have done differently?',
+                    'What knowledge or skills gaps did this reveal?',
+                    'What would you do if faced with this again?',
+                    'What additional support or resources might have helped?'
+                ],
+                examples: [
+                    {
+                        title: 'Assertive Communication Skills',
+                        text: 'I need to develop more confidence in escalating concerns, even when parameters appear normal. Learning SBAR communication would help me present concerns more effectively.'
+                    },
+                    {
+                        title: 'Using Structured Tools',
+                        text: 'I could have used a systematic pain assessment tool instead of relying solely on the numeric scale. The Abbey Pain Scale might be more appropriate for elderly patients.'
+                    },
+                    {
+                        title: 'Family-Centered Care',
+                        text: 'I should have proactively communicated with the family before the medication change. This experience highlights the importance of anticipatory communication in palliative care.'
+                    }
+                ],
+                tips: [
+                    'Be specific about learning points',
+                    'Identify concrete skill gaps',
+                    'Consider both personal and system-level learning',
+                    'Think about what resources could have helped'
+                ]
+            },
+            {
+                id: 'action',
+                name: 'Action Plan',
+                icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+                color: 'action',
+                question: 'What will you do differently next time?',
+                subtitle: 'Create SMART goals for professional development',
+                guidingQuestions: [
+                    'What specific actions will you take?',
+                    'What skills do you need to develop?',
+                    'What learning opportunities will you seek?',
+                    'What timeline will you set for these goals?',
+                    'How will you know you\'ve achieved your goals?'
+                ],
+                examples: [
+                    {
+                        title: 'Complete Pain Management Course',
+                        text: 'GOAL: Complete the hospital\'s online pain management module within 2 weeks. I will then apply multimodal pain assessment on my next 5 post-surgical patients and document in my reflective journal.'
+                    },
+                    {
+                        title: 'Shadow Specialist Nurses',
+                        text: 'GOAL: Arrange to shadow the Acute Pain Service for one shift this month. I will prepare 3 specific questions about managing breakthrough pain in elderly patients.'
+                    },
+                    {
+                        title: 'System Improvement Suggestion',
+                        text: 'GOAL: Submit a quality improvement suggestion about including family notification in the medication change protocol. I will discuss with my ward manager within 1 week and follow up on progress.'
+                    }
+                ],
+                tips: [
+                    'Make goals SMART: Specific, Measurable, Achievable, Relevant, Time-bound',
+                    'Include both immediate and longer-term actions',
+                    'Consider professional development opportunities',
+                    'Think about contributing to system improvements'
+                ]
+            }
+        ];
+
+        // State
+        let currentSession = null;
+        let currentPhaseIndex = 0;
+        let isTransitioning = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSession();
+        });
+
+        // Get session ID from URL
+        function getSessionId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        // Load session from localStorage
+        function loadSession() {
+            const sessionId = getSessionId();
+            if (!sessionId) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            const reflections = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            currentSession = reflections.find(r => r.id === sessionId);
+
+            if (!currentSession) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // Initialize phases object if not exists
+            if (!currentSession.phases) {
+                currentSession.phases = {};
+            }
+
+            // Set session title in nav
+            document.getElementById('session-title-nav').textContent = currentSession.title;
+            document.title = `${currentSession.title} | Gibbs' Reflective Cycle`;
+
+            // Find current phase (first incomplete)
+            currentPhaseIndex = findCurrentPhase();
+
+            // Render initial state
+            updatePhaseIndicator();
+            renderPhaseContent();
+            renderSidebar();
+        }
+
+        // Find current incomplete phase
+        function findCurrentPhase() {
+            for (let i = 0; i < PHASES.length; i++) {
+                const phaseId = PHASES[i].id;
+                if (!currentSession.phases[phaseId] || currentSession.phases[phaseId].trim() === '') {
+                    return i;
+                }
+            }
+            return 0; // If all complete, start at beginning for review
+        }
+
+        // Update phase indicator dots
+        function updatePhaseIndicator() {
+            const dots = document.querySelectorAll('.phase-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.remove('active', 'completed');
+
+                const phaseId = PHASES[index].id;
+                const hasContent = currentSession.phases[phaseId] && currentSession.phases[phaseId].trim() !== '';
+
+                if (index === currentPhaseIndex) {
+                    dot.classList.add('active');
+                } else if (hasContent) {
+                    dot.classList.add('completed');
+                }
+            });
+        }
+
+        // Render phase content
+        function renderPhaseContent() {
+            const container = document.getElementById('phase-content-container');
+            const phase = PHASES[currentPhaseIndex];
+            const savedContent = currentSession.phases[phase.id] || '';
+
+            container.innerHTML = `
+                <div class="phase-content phase-${phase.id}">
+                    <div class="phase-header">
+                        <span class="phase-tag ${phase.color}">
+                            <span>${phase.icon}</span>
+                            <span>Phase ${currentPhaseIndex + 1}: ${phase.name}</span>
+                        </span>
+                        <h2>${phase.question}</h2>
+                        <p style="color: var(--gray-500); margin-top: var(--space-2);">${phase.subtitle}</p>
+                    </div>
+
+                    <div class="guiding-questions">
+                        <h5>Guiding Questions</h5>
+                        <ul>
+                            ${phase.guidingQuestions.map(q => `<li>${q}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="phase-response">Your Reflection</label>
+                        <textarea 
+                            id="phase-response" 
+                            class="form-textarea" 
+                            placeholder="Take your time to reflect and write your thoughts..."
+                            rows="10"
+                        >${escapeHtml(savedContent)}</textarea>
+                    </div>
+
+                    <div class="phase-navigation">
+                        <button 
+                            class="btn btn-secondary" 
+                            onclick="navigatePhase(-1)"
+                            ${currentPhaseIndex === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}
+                        >
+                            ← Previous
+                        </button>
+                        
+                        <div style="display: flex; gap: var(--space-3);">
+                            <button class="btn btn-secondary" onclick="saveProgress()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save
+                            </button>
+                            ${currentPhaseIndex < PHASES.length - 1 ? `
+                                <button class="btn btn-primary" onclick="saveAndNext()">
+                                    Save & Continue →
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" onclick="completeReflection()">
+                                    ✓ Complete Reflection
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Focus textarea with a small delay for animation
+            setTimeout(() => {
+                const textarea = document.getElementById('phase-response');
+                if (textarea && !savedContent) {
+                    textarea.focus();
+                }
+            }, 300);
+        }
+
+        // Render sidebar
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const phase = PHASES[currentPhaseIndex];
+            const randomExample = phase.examples[Math.floor(Math.random() * phase.examples.length)];
+
+            sidebar.innerHTML = `
+                <div class="sidebar-section">
+                    <h5><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Example Scenario</h5>
+                    <div class="example-scenario">
+                        <strong>${randomExample.title}</strong><br><br>
+                        "${randomExample.text}"
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h5><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.9V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.1A7 7 0 0 0 12 2z"/></svg>Writing Tips</h5>
+                    <div class="tip-box">
+                        <ul style="list-style: none; margin: 0; padding: 0;">
+                            ${phase.tips.map(tip => `
+                                <li style="margin-bottom: var(--space-2); padding-left: var(--space-4); position: relative;">
+                                    <span style="position: absolute; left: 0;">•</span>
+                                    ${tip}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h5><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>More Examples</h5>
+                    ${phase.examples.map((ex, i) => `
+                        <button 
+                            class="btn btn-secondary" 
+                            style="width: 100%; margin-bottom: var(--space-2); font-size: 0.875rem; justify-content: flex-start;"
+                            onclick="showExample(${currentPhaseIndex}, ${i})"
+                        >
+                            ${ex.title}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Show specific example in sidebar
+        function showExample(phaseIndex, exampleIndex) {
+            const phase = PHASES[phaseIndex];
+            const example = phase.examples[exampleIndex];
+
+            const exampleBox = document.querySelector('.example-scenario');
+            exampleBox.style.animation = 'none';
+            exampleBox.offsetHeight; // Trigger reflow
+            exampleBox.style.animation = 'fadeInUp 0.3s ease';
+
+            exampleBox.innerHTML = `
+                <strong>${example.title}</strong><br><br>
+                "${example.text}"
+            `;
+        }
+
+        // Navigate between phases
+        function navigatePhase(direction) {
+            if (isTransitioning) return;
+
+            const newIndex = currentPhaseIndex + direction;
+            if (newIndex < 0 || newIndex >= PHASES.length) return;
+
+            transitionToPhase(newIndex);
+        }
+
+        // Transition animation
+        function transitionToPhase(newIndex) {
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const container = document.getElementById('phase-content-container');
+            const content = container.querySelector('.phase-content');
+
+            // Exit animation
+            content.classList.add('phase-exit');
+
+            setTimeout(() => {
+                currentPhaseIndex = newIndex;
+                updatePhaseIndicator();
+                renderPhaseContent();
+                renderSidebar();
+
+                // Entry animation is handled by CSS class on render
+                isTransitioning = false;
+            }, 300);
+        }
+
+        // Save progress
+        function saveProgress() {
+            const textarea = document.getElementById('phase-response');
+            const phaseId = PHASES[currentPhaseIndex].id;
+
+            currentSession.phases[phaseId] = textarea.value;
+            currentSession.updatedAt = new Date().toISOString();
+
+            // Update localStorage
+            const reflections = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const index = reflections.findIndex(r => r.id === currentSession.id);
+            if (index !== -1) {
+                reflections[index] = currentSession;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(reflections));
+            }
+
+            // Visual feedback
+            showSaveNotification();
+            updatePhaseIndicator();
+        }
+
+        // Save and navigate to next phase
+        function saveAndNext() {
+            saveProgress();
+
+            if (currentPhaseIndex < PHASES.length - 1) {
+                setTimeout(() => {
+                    transitionToPhase(currentPhaseIndex + 1);
+                }, 200);
+            }
+        }
+
+        // Complete reflection
+        function completeReflection() {
+            saveProgress();
+
+            // Show completion message then redirect
+            const container = document.getElementById('phase-content-container');
+            container.innerHTML = `
+                <div class="phase-content" style="text-align: center; padding: var(--space-16);">
+                    <div style="font-size: 4rem; margin-bottom: var(--space-6);"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--primary-500)" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                    <h2 style="margin-bottom: var(--space-4);">Reflection Complete!</h2>
+                    <p style="margin-bottom: var(--space-8); max-width: 500px; margin-left: auto; margin-right: auto;">
+                        Congratulations on completing your reflective cycle. Taking time to reflect on your practice is a powerful step toward professional growth.
+                    </p>
+                    <div style="display: flex; gap: var(--space-4); justify-content: center;">
+                        <a href="dashboard.html" class="btn btn-primary btn-lg">
+                            Return to Dashboard
+                        </a>
+                        <button class="btn btn-secondary btn-lg" onclick="reviewReflection()">
+                            Review Reflection
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Update sidebar
+            document.getElementById('sidebar').innerHTML = `
+                <div class="sidebar-section">
+                    <h5><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 6px;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>Well Done!</h5>
+                    <p style="color: var(--gray-600); font-size: 0.9375rem;">
+                        You've completed all six phases of Gibbs' Reflective Cycle. Your insights and action plan will help guide your continued professional development.
+                    </p>
+                </div>
+                <div class="sidebar-section">
+                    <h5><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>Session Summary</h5>
+                    <ul style="list-style: none;">
+                        ${PHASES.map(p => {
+                const hasContent = currentSession.phases[p.id] && currentSession.phases[p.id].trim() !== '';
+                return `
+                                <li style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                                    <span style="color: ${hasContent ? 'var(--success)' : 'var(--gray-400)'};">
+                                        ${hasContent ? '✓' : '○'}
+                                    </span>
+                                    <span style="color: var(--gray-${hasContent ? '700' : '400'});">
+                                        ${p.name}
+                                    </span>
+                                </li>
+                            `;
+            }).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Review completed reflection
+        function reviewReflection() {
+            currentPhaseIndex = 0;
+            updatePhaseIndicator();
+            renderPhaseContent();
+            renderSidebar();
+        }
+
+        // Show save notification
+        function showSaveNotification() {
+            // Create notification if doesn't exist
+            let notification = document.getElementById('save-notification');
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'save-notification';
+                notification.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    background: var(--success);
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                    transform: translateY(100px);
+                    opacity: 0;
+                    transition: all 0.3s ease;
+                    z-index: 1000;
+                `;
+                document.body.appendChild(notification);
+            }
+
+            notification.textContent = '✓ Progress saved';
+            notification.style.transform = 'translateY(0)';
+            notification.style.opacity = '1';
+
+            setTimeout(() => {
+                notification.style.transform = 'translateY(100px)';
+                notification.style.opacity = '0';
+            }, 2000);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Auto-save on textarea change (debounced)
+        let autoSaveTimeout = null;
+        document.addEventListener('input', (e) => {
+            if (e.target.id === 'phase-response') {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(() => {
+                    saveProgress();
+                }, 2000);
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + S to save
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveProgress();
+            }
+
+            // Ctrl/Cmd + Enter to save and continue
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                if (currentPhaseIndex < PHASES.length - 1) {
+                    saveAndNext();
+                } else {
+                    completeReflection();
+                }
+            }
+        });
+
+        // Warn before leaving with unsaved changes
+        window.addEventListener('beforeunload', (e) => {
+            const textarea = document.getElementById('phase-response');
+            if (textarea) {
+                const phaseId = PHASES[currentPhaseIndex].id;
+                const savedContent = currentSession.phases[phaseId] || '';
+                if (textarea.value !== savedContent) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
