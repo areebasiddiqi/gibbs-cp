@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Outfit } from 'next/font/google'
 import './globals.css'
+import Chatbot from '@/components/Chatbot'
 
 const inter = Inter({
     subsets: ['latin'],
@@ -26,7 +27,10 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
-            <body>{children}</body>
+            <body>
+                {children}
+                <Chatbot />
+            </body>
         </html>
     )
 }
