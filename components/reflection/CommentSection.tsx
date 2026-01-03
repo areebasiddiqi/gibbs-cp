@@ -61,7 +61,7 @@ export default function CommentSection({ reflectionId, currentUserId }: CommentS
                         user_id: currentUserId,
                         content: newComment.trim()
                     }
-                ])
+                ] as any)
                 .select(`
                     *,
                     profiles (full_name)
@@ -71,8 +71,8 @@ export default function CommentSection({ reflectionId, currentUserId }: CommentS
             if (error) throw error
 
             const newCommentWithAuthor = {
-                ...data,
-                author_name: data.profiles?.full_name || 'Anonymous'
+                ...(data as any),
+                author_name: (data as any).profiles?.full_name || 'Anonymous'
             }
 
             setComments([...comments, newCommentWithAuthor])

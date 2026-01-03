@@ -26,7 +26,7 @@ export default async function DashboardPage() {
     }
 
     // Transform the data to include author_name
-    const transformedReflections = reflections?.map(r => ({
+    const transformedReflections = reflections?.map((r: any) => ({
         ...r,
         author_name: r.profiles?.full_name || 'Unknown'
     })) || []

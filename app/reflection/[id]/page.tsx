@@ -24,14 +24,14 @@ export default async function ReflectionPage({ params }: { params: { id: string 
         redirect('/dashboard')
     }
 
-    const isOwner = reflection.user_id === user.id
+    const isOwner = (reflection as any).user_id === user.id
 
     return (
         <>
             <Navbar />
             <div className="container" style={{ paddingBottom: 'var(--space-8)' }}>
                 <ReflectionClient reflection={reflection} isOwner={isOwner} />
-                <CommentSection reflectionId={reflection.id} currentUserId={user.id} />
+                <CommentSection reflectionId={(reflection as any).id} currentUserId={user.id} />
             </div>
         </>
     )

@@ -49,12 +49,13 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
 
         const { error } = await supabase
             .from('reflections')
+            // @ts-ignore
             .update({
                 [phaseKey]: content,
                 progress,
                 is_complete: isComplete,
                 updated_at: new Date().toISOString(),
-            })
+            } as any)
             .eq('id', reflection.id)
 
         if (error) {

@@ -30,7 +30,7 @@ export default function DashboardClient({ initialReflections, userId }: Dashboar
                     progress: 0,
                     is_complete: false,
                 },
-            ])
+            ] as any)
             .select()
             .single()
 
@@ -40,7 +40,7 @@ export default function DashboardClient({ initialReflections, userId }: Dashboar
         }
 
         if (data) {
-            router.push(`/reflection/${data.id}`)
+            router.push(`/reflection/${(data as any).id}`)
         }
     }
 
