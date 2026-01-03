@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Loader2, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
     role: "user" | "assistant";
@@ -26,7 +27,7 @@ export default function Chatbot() {
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages]);
+    }, [messages, isLoading]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -97,7 +98,13 @@ export default function Chatbot() {
                                     {m.role === "user" ? <User size={16} /> : <Bot size={16} />}
                                 </div>
                                 <div className="message-content">
-                                    <p>{m.content}</p>
+                                    {m.role === "assistant" ? (
+                                        <div className="markdown-content">
+                                            <ReactMarkdown>{m.content}</ReactMarkdown>
+                                        </div>
+                                    ) : (
+                                        <p>{m.content}</p>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -107,7 +114,11 @@ export default function Chatbot() {
                                     <Bot size={16} />
                                 </div>
                                 <div className="message-content loading">
-                                    <Loader2 className="animate-spin" size={16} />
+                                    <div className="typing-indicator">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -305,11 +316,72 @@ export default function Chatbot() {
           border-bottom-right-radius: 0;
         }
 
+        .markdown-content :global(p) {
+          margin-bottom: var(--space-2);
+        }
+
+        .markdown-content :global(p:last-child) {
+          margin-bottom: 0;
+        }
+
+        .markdown-content :global(ul), .markdown-content :global(ol) {
+          margin-left: var(--space-4);
+          margin-bottom: var(--space-2);
+        }
+
+        .markdown-content :global(li) {
+          margin-bottom: var(--space-1);
+        }
+
+        .markdown-content :global(strong) {
+          font-weight: 700;
+          color: var(--gray-900);
+        }
+
+        .markdown-content :global(code) {
+          background: var(--gray-100);
+          padding: 2px 4px;
+          border-radius: 4px;
+          font-family: monospace;
+          font-size: 0.875rem;
+        }
+
         .loading {
           display: flex;
           align-items: center;
           justify-content: center;
-          min-width: 40px;
+          min-width: 60px;
+          padding: var(--space-2) var(--space-4);
+        }
+
+        .typing-indicator {
+          display: flex;
+          gap: 4px;
+        }
+
+        .typing-indicator span {
+          width: 8px;
+          height: 8px;
+          background: var(--gray-400);
+          border-radius: 50%;
+          display: inline-block;
+          animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) {
+          animation-delay: -0.32s;
+        }
+
+        .typing-indicator span:nth-child(2) {
+          animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+          0%, 80%, 100% { 
+            transform: scale(0);
+          } 40% { 
+            transform: scale(1.0);
+          }
         }
 
         .chatbot-input {
