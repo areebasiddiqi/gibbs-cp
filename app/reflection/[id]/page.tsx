@@ -26,11 +26,26 @@ export default async function ReflectionPage({ params }: { params: { id: string 
 
     const isOwner = (reflection as any).user_id === user.id
 
+    // Check if user is an invited mentor with edit permission
+    let canEdit = isOwner
+    if (!isOwner) {
+        const { data: share } = await supabase
+            .from('reflection_shares')
+            .select('permission')
+            .eq('reflection_id', params.id)
+            .eq('email', user.email)
+            .single()
+
+        if (share && share.permission === 'edit') {
+            canEdit = true
+        }
+    }
+
     return (
         <>
             <Navbar />
             <div className="container" style={{ paddingBottom: 'var(--space-8)' }}>
-                <ReflectionClient reflection={reflection} isOwner={isOwner} />
+                <ReflectionClient reflection={reflection} isOwner={isOwner} canEdit={canEdit} />
                 <CommentSection reflectionId={(reflection as any).id} currentUserId={user.id} />
             </div>
         </>
