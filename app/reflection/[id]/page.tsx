@@ -28,7 +28,7 @@ export default async function ReflectionPage({ params }: { params: { id: string 
 
     // Check if user is an invited mentor with edit permission
     let canEdit = isOwner
-    if (!isOwner) {
+    if (!isOwner && user.email) {
         const { data: share } = await supabase
             .from('reflection_shares')
             .select('permission')
@@ -36,7 +36,7 @@ export default async function ReflectionPage({ params }: { params: { id: string 
             .eq('email', user.email)
             .single()
 
-        if (share && share.permission === 'edit') {
+        if (share && (share as any).permission === 'edit') {
             canEdit = true
         }
     }

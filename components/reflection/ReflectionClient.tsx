@@ -177,7 +177,8 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
                                     const newVisibility = !reflection.is_public
                                     const { error } = await supabase
                                         .from('reflections')
-                                        .update({ is_public: newVisibility, updated_at: new Date().toISOString() })
+                                        // @ts-ignore
+                                        .update({ is_public: newVisibility, updated_at: new Date().toISOString() } as any)
                                         .eq('id', reflection.id)
 
                                     if (!error) {
@@ -240,11 +241,12 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
 
                                     const { error } = await supabase
                                         .from('reflection_shares')
+                                        // @ts-ignore
                                         .insert({
                                             reflection_id: reflection.id,
                                             email: email,
                                             permission: 'edit'
-                                        })
+                                        } as any)
 
                                     if (error) {
                                         alert('Error inviting mentor: ' + error.message)
