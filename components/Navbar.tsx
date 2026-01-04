@@ -62,6 +62,7 @@ export default function Navbar() {
                             <li><Link href="/#phases" className="nav-link">The 6 Phases</Link></li>
                             <li><Link href="/#benefits" className="nav-link">Benefits</Link></li>
                             <li><Link href="/bookshelf" className="nav-link">Bookshelf</Link></li>
+                            <li><a href="https://calendly.com/jamilaljuaid/30min" target="_blank" rel="noopener noreferrer" className="nav-link">Consultation</a></li>
                             <li><Link href="/login" className="btn btn-primary">Start Reflecting</Link></li>
                         </>
                     ) : (
@@ -71,6 +72,7 @@ export default function Navbar() {
                             )}
                             <li><Link href="/dashboard" className="nav-link">Dashboard</Link></li>
                             <li><Link href="/bookshelf" className="nav-link">Bookshelf</Link></li>
+                            <li><a href="https://calendly.com/jamilaljuaid/30min" target="_blank" rel="noopener noreferrer" className="nav-link">Consultation</a></li>
                             <li>
                                 <button onClick={handleSignOut} className="btn btn-secondary">
                                     Sign Out
