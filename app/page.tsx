@@ -123,6 +123,7 @@ export default function Home() {
                         <div className="footer-links">
                             <a href="#phases">The 6 Phases</a>
                             <a href="#benefits">Benefits</a>
+                            <Link href="/bookshelf">Bookshelf</Link>
                             <Link href="/dashboard">Dashboard</Link>
                         </div>
                     </div>

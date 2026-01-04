@@ -61,6 +61,7 @@ export default function Navbar() {
                         <>
                             <li><Link href="/#phases" className="nav-link">The 6 Phases</Link></li>
                             <li><Link href="/#benefits" className="nav-link">Benefits</Link></li>
+                            <li><Link href="/bookshelf" className="nav-link">Bookshelf</Link></li>
                             <li><Link href="/login" className="btn btn-primary">Start Reflecting</Link></li>
                         </>
                     ) : (
@@ -69,6 +70,7 @@ export default function Navbar() {
                                 <li><Link href="/" className="nav-link">Home</Link></li>
                             )}
                             <li><Link href="/dashboard" className="nav-link">Dashboard</Link></li>
+                            <li><Link href="/bookshelf" className="nav-link">Bookshelf</Link></li>
                             <li>
                                 <button onClick={handleSignOut} className="btn btn-secondary">
                                     Sign Out
