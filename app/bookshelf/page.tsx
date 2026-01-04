@@ -8,7 +8,7 @@ export default function BookshelfPage() {
     const [loading, setLoading] = useState(true)
 
     // Placeholder URL - User should replace this with their actual Heyzine bookshelf URL
-    const bookshelfUrl = "https://heyzine.com/shelf/1af00da1c6.html"
+    const bookshelfUrl = "https://heyzine.com/shelf/46d700c9f3.html"
 
     return (
         <div className="bookshelf-container">
