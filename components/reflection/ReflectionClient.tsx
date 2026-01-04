@@ -186,7 +186,7 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
                                     }
                                 }}
                                 style={{
-                                    background: reflection.is_public ? 'var(--primary)' : 'var(--gray-300)',
+                                    background: reflection.is_public ? '#2bc45e' : 'var(--gray-300)',
                                     border: 'none',
                                     borderRadius: '9999px',
                                     width: '44px',
