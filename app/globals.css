@@ -1556,178 +1556,6 @@ a:hover {
     margin-top: var(--space-4);
 }
 
-
-/* Sidebar Resources */
-.sidebar-section {
-    margin-bottom: var(--space-6);
-}
-
-.sidebar-section h5 {
-    margin-bottom: var(--space-3);
-    color: var(--gray-700);
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.example-scenario {
-    padding: var(--space-4);
-    background: var(--primary-50);
-    border-radius: var(--radius-md);
-    border-left: 3px solid var(--primary-500);
-    font-size: 0.875rem;
-    color: var(--gray-700);
-    line-height: 1.5;
-}
-
-.tip-box {
-    padding: var(--space-4);
-    background: var(--gray-50);
-    border-radius: var(--radius-md);
-    font-size: 0.875rem;
-}
-
-.tip-box-icon {
-    display: inline-flex;
-    margin-right: var(--space-2);
-}
-
-/* Phase Transition Animations */
-.phase-enter {
-    animation: phaseEnter 0.5s ease forwards;
-}
-
-.phase-exit {
-    animation: phaseExit 0.3s ease forwards;
-}
-
-@keyframes phaseEnter {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes phaseExit {
-    from {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    to {
-        opacity: 0;
-        transform: translateX(-30px);
-    }
-}
-
-/* Special Phase Animations */
-.phase-feelings .phase-content {
-    animation: fadeScaleIn 0.5s ease;
-}
-
-.phase-evaluation .phase-content {
-    animation: splitReveal 0.6s ease;
-}
-
-.phase-analysis .phase-content {
-    animation: rotateIn 0.5s ease;
-}
-
-.phase-conclusion .phase-content {
-    animation: collapseExpand 0.5s ease;
-}
-
-.phase-action .phase-content {
-    animation: stackIn 0.5s ease;
-}
-
-@keyframes fadeScaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes splitReveal {
-    from {
-        opacity: 0;
-        clip-path: inset(50% 0 50% 0);
-    }
-
-    to {
-        opacity: 1;
-        clip-path: inset(0 0 0 0);
-    }
-}
-
-@keyframes rotateIn {
-    from {
-        opacity: 0;
-        transform: perspective(500px) rotateY(-15deg);
-    }
-
-    to {
-        opacity: 1;
-        transform: perspective(500px) rotateY(0);
-    }
-}
-
-@keyframes collapseExpand {
-    from {
-        opacity: 0;
-        transform: scaleY(0.8);
-        transform-origin: top;
-    }
-
-    to {
-        opacity: 1;
-        transform: scaleY(1);
-    }
-}
-
-@keyframes stackIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* Responsive for Reflection Page */
-@media (max-width: 1024px) {
-    .reflection-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .reflection-sidebar {
-        position: static;
-        order: -1;
-    }
-}
-
-/* Utility Classes */
-.text-center {
-    text-align: center;
-}
-
-.mt-4 {
-    margin-top: var(--space-4);
-}
-
 .mt-8 {
     margin-top: var(--space-8);
 }
@@ -2008,5 +1836,108 @@ a:hover {
 
     .nav-logo span {
         font-size: 1.25rem;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .hero .container {
+        gap: var(--space-8);
+    }
+
+    .phases-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: var(--space-12) 0;
+    }
+
+    .hero {
+        padding: calc(var(--space-12) + 80px) 0 var(--space-12);
+        text-align: center;
+    }
+
+    .hero .container {
+        grid-template-columns: 1fr;
+        gap: var(--space-12);
+    }
+
+    .hero-content {
+        order: 2;
+    }
+
+    .gibbs-cycle {
+        order: 1;
+        max-width: 350px;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .phases-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .benefit-card {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: var(--space-8);
+        text-align: center;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-description {
+        font-size: 1.125rem;
+    }
+
+    .gibbs-cycle {
+        max-width: 280px;
+    }
+
+    .phase-node {
+        width: 60px;
+        height: 60px;
+        margin-left: -30px;
+        margin-top: -30px;
+    }
+
+    .phase-node-icon {
+        font-size: 1.25rem;
+    }
+
+    .phase-node-label {
+        font-size: 0.5rem;
+    }
+
+    .cycle-center {
+        width: 45%;
+        height: 45%;
+    }
+
+    .cycle-center-text {
+        font-size: 0.8rem;
     }
 }
