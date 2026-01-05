@@ -104,41 +104,6 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
 
     return (
         <div className="reflection-layout">
-            <div className="reflection-main">
-                {/* Phase Indicator */}
-                <div className="phase-indicator">
-                    {PHASES.map((phase, index) => {
-                        const isCompleted = reflection[phase.key] && reflection[phase.key]!.trim() !== ''
-                        const isActive = index === currentPhaseIndex
-
-                        return (
-                            <div
-                                key={phase.key}
-                                className={`phase-dot ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`}
-                                onClick={() => handlePhaseClick(index)}
-                                style={{ cursor: 'pointer' }}
-                                title={phase.label}
-                            >
-                                {phase.number}
-                            </div>
-                        )
-                    })}
-                </div>
-
-                {/* Phase Content */}
-                <PhaseForm
-                    phase={currentPhase}
-                    value={reflection[currentPhase.key] || ''}
-                    onSave={handleSave}
-                    saving={saving}
-                    onNext={handleNext}
-                    onPrevious={handlePrevious}
-                    isFirst={currentPhaseIndex === 0}
-                    isLast={currentPhaseIndex === PHASES.length - 1}
-                    readOnly={!canEdit}
-                />
-            </div>
-
             {/* Sidebar */}
             <div className="glass-card reflection-sidebar">
                 <div className="sidebar-section">
@@ -165,7 +130,7 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
 
                 {isOwner && (
                     <div className="sidebar-section">
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div className="sidebar-flex-group" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                             <div>
                                 <h5 style={{ marginBottom: '4px' }}>Visibility</h5>
                                 <p style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>
@@ -195,6 +160,7 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
                                     cursor: 'pointer',
                                     transition: 'background 0.2s',
                                     padding: 0,
+                                    flexShrink: 0,
                                 }}
                             >
                                 <div
@@ -218,7 +184,7 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
                 {isOwner && (
                     <div className="sidebar-section">
                         <h5 style={{ marginBottom: 'var(--space-3)' }}>Invite Mentor</h5>
-                        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                        <div className="sidebar-flex-group">
                             <input
                                 type="email"
                                 placeholder="mentor@email.com"
@@ -229,11 +195,12 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
                                     borderRadius: 'var(--radius-md)',
                                     border: '1px solid var(--gray-300)',
                                     fontSize: '0.875rem',
+                                    minWidth: '0', // Allow input to shrink
                                 }}
                             />
                             <button
                                 className="btn btn-primary"
-                                style={{ padding: 'var(--space-2)' }}
+                                style={{ padding: 'var(--space-2)', whiteSpace: 'nowrap' }}
                                 onClick={async () => {
                                     const emailInput = document.getElementById('invite-email') as HTMLInputElement
                                     const email = emailInput.value
@@ -263,10 +230,10 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
                         </div>
 
                         {/* Share Options */}
-                        <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-2)' }}>
+                        <div className="sidebar-flex-group" style={{ marginTop: 'var(--space-2)' }}>
                             <button
                                 className="btn btn-secondary"
-                                style={{ flex: 1, fontSize: '0.75rem', padding: 'var(--space-1)' }}
+                                style={{ flex: 1, fontSize: '0.75rem', padding: 'var(--space-1)', whiteSpace: 'nowrap' }}
                                 onClick={() => {
                                     const url = window.location.href
                                     navigator.clipboard.writeText(url)
@@ -278,7 +245,7 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
                             <a
                                 href={`mailto:?subject=Review my reflection: ${reflection.title}&body=Hi,%0A%0AI invited you to review my reflection "${reflection.title}".%0A%0APlease access it here: ${typeof window !== 'undefined' ? window.location.href : ''}`}
                                 className="btn btn-secondary"
-                                style={{ flex: 1, fontSize: '0.75rem', padding: 'var(--space-1)', textAlign: 'center', textDecoration: 'none' }}
+                                style={{ flex: 1, fontSize: '0.75rem', padding: 'var(--space-1)', textAlign: 'center', textDecoration: 'none', whiteSpace: 'nowrap' }}
                             >
                                 📧 Send Email
                             </a>
@@ -386,6 +353,41 @@ export default function ReflectionClient({ reflection: initialReflection, isOwne
                         ← Back to Dashboard
                     </button>
                 </div>
+            </div>
+
+            <div className="reflection-main">
+                {/* Phase Indicator */}
+                <div className="phase-indicator">
+                    {PHASES.map((phase, index) => {
+                        const isCompleted = reflection[phase.key] && reflection[phase.key]!.trim() !== ''
+                        const isActive = index === currentPhaseIndex
+
+                        return (
+                            <div
+                                key={phase.key}
+                                className={`phase-dot ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`}
+                                onClick={() => handlePhaseClick(index)}
+                                style={{ cursor: 'pointer' }}
+                                title={phase.label}
+                            >
+                                {phase.number}
+                            </div>
+                        )
+                    })}
+                </div>
+
+                {/* Phase Content */}
+                <PhaseForm
+                    phase={currentPhase}
+                    value={reflection[currentPhase.key] || ''}
+                    onSave={handleSave}
+                    saving={saving}
+                    onNext={handleNext}
+                    onPrevious={handlePrevious}
+                    isFirst={currentPhaseIndex === 0}
+                    isLast={currentPhaseIndex === PHASES.length - 1}
+                    readOnly={!canEdit}
+                />
             </div>
         </div>
     )

@@ -11,6 +11,7 @@ export default function Navbar() {
     const pathname = usePathname()
     const [user, setUser] = useState<User | null>(null)
     const [scrolled, setScrolled] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const supabase = createClient()
 
     useEffect(() => {
@@ -56,22 +57,36 @@ export default function Navbar() {
                     />
                     <span>Nursing Mentorship</span>
                 </Link>
-                <ul className="nav-links">
+
+                {/* Mobile Menu Toggle */}
+                <button
+                    className="mobile-menu-toggle"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    aria-label="Toggle mobile menu"
+                >
+                    <span className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+
+                <ul className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
                     {!user ? (
                         <>
-                            <li><Link href="/#phases" className="nav-link">The 6 Phases</Link></li>
-                            <li><Link href="/#benefits" className="nav-link">Benefits</Link></li>
-                            <li><Link href="/bookshelf" className="nav-link">Bookshelf</Link></li>
+                            <li><Link href="/#phases" className="nav-link" onClick={() => setMobileMenuOpen(false)}>The 6 Phases</Link></li>
+                            <li><Link href="/#benefits" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Benefits</Link></li>
+                            <li><Link href="/bookshelf" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Bookshelf</Link></li>
                             <li><a href="https://calendly.com/jamilaljuaid/30min" target="_blank" rel="noopener noreferrer" className="nav-link">Consultation</a></li>
-                            <li><Link href="/login" className="btn btn-primary">Start Reflecting</Link></li>
+                            <li><Link href="/login" className="btn btn-primary" onClick={() => setMobileMenuOpen(false)}>Start Reflecting</Link></li>
                         </>
                     ) : (
                         <>
                             {!isDashboard && (
-                                <li><Link href="/" className="nav-link">Home</Link></li>
+                                <li><Link href="/" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link></li>
                             )}
-                            <li><Link href="/dashboard" className="nav-link">Dashboard</Link></li>
-                            <li><Link href="/bookshelf" className="nav-link">Bookshelf</Link></li>
+                            <li><Link href="/dashboard" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link></li>
+                            <li><Link href="/bookshelf" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Bookshelf</Link></li>
                             <li><a href="https://calendly.com/jamilaljuaid/30min" target="_blank" rel="noopener noreferrer" className="nav-link">Consultation</a></li>
                             <li>
                                 <button onClick={handleSignOut} className="btn btn-secondary">
